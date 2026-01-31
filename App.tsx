@@ -10,8 +10,12 @@ import StudentResultView from './components/StudentResultView';
 import { db, isFirebaseConfigured } from './firebase';
 import { collection, onSnapshot, query, orderBy, addDoc } from 'firebase/firestore';
 
-const App: React.FC = () => {
-  const [view, setView] = useState<ViewState>('STUDENT_HOME');
+interface AppProps {
+  mode: 'student' | 'admin';
+}
+
+const App: React.FC<AppProps> = ({ mode }) => {
+  const [view, setView] = useState<ViewState>(mode === 'admin' ? 'ADMIN_DASHBOARD' : 'STUDENT_HOME');
   const [tests, setTests] = useState<Test[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [activeTest, setActiveTest] = useState<Test | null>(null);
@@ -22,14 +26,7 @@ const App: React.FC = () => {
   const LOCAL_TESTS_KEY = 'tt_tests';
   const LOCAL_SUBMISSIONS_KEY = 'tt_submissions';
 
-  // 초기 라우팅 설정 (URL에 ?admin이 있으면 관리자 모드)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('admin')) {
-      setView('ADMIN_DASHBOARD');
-    }
-  }, []);
-
+  // Firestore 데이터 로드
   useEffect(() => {
     let unsubscribeTests: () => void = () => {};
     let unsubscribeSubmissions: () => void = () => {};
