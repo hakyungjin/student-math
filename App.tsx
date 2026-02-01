@@ -38,7 +38,7 @@ const App: React.FC<AppProps> = ({ mode }) => {
       try {
         const qTests = query(collection(db, 'tests'), orderBy('createdAt', 'desc'));
         unsubscribeTests = onSnapshot(qTests, (snapshot) => {
-          const testsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Test));
+          const testsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Test));
           setTests(testsData);
           setIsLoading(false);
         }, (error) => {
@@ -48,7 +48,7 @@ const App: React.FC<AppProps> = ({ mode }) => {
 
         const qSubmissions = query(collection(db, 'submissions'), orderBy('submittedAt', 'desc'));
         unsubscribeSubmissions = onSnapshot(qSubmissions, (snapshot) => {
-          const submissionsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Submission));
+          const submissionsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Submission));
           setSubmissions(submissionsData);
         }, (error) => {
           console.error("Firestore Submission Error:", error);
