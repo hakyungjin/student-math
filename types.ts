@@ -32,4 +32,4 @@ export interface Submission {
   gradedResults: Record<string, boolean>; // questionId -> isCorrect
 }
 
-export type ViewState = 'STUDENT_HOME' | 'STUDENT_TEST' | 'STUDENT_RESULT' | 'ADMIN_DASHBOARD' | 'ADMIN_CREATE';
+export type ViewState = 'STUDENT_HOME' | 'STUDENT_TEST' | 'STUDENT_RESULT' | 'ADMIN_DASHBOARD' | 'ADMIN_CREATE' | 'ADMIN_TEST_DETAIL' | 'ADMIN_STUDENT_DETAIL';
