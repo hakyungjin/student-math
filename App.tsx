@@ -5,10 +5,12 @@ import Header from './components/Header';
 import Home from './components/Home';
 import TeacherDashboard from './components/TeacherDashboard';
 import TestCreator from './components/TestCreator';
+import TestDetailView from './components/TestDetailView';
+import StudentSubmissionDetail from './components/StudentSubmissionDetail';
 import StudentTestView from './components/StudentTestView';
 import StudentResultView from './components/StudentResultView';
 import { db, isFirebaseConfigured } from './firebase';
-import { collection, onSnapshot, query, orderBy, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, addDoc, deleteDoc, doc, getDocs, where } from 'firebase/firestore';
 
 interface AppProps {
   mode: 'student' | 'admin';
@@ -19,6 +21,7 @@ const App: React.FC<AppProps> = ({ mode }) => {
   const [tests, setTests] = useState<Test[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [activeTest, setActiveTest] = useState<Test | null>(null);
+  const [activeSubmission, setActiveSubmission] = useState<Submission | null>(null);
   const [lastSubmission, setLastSubmission] = useState<Submission | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [useLocalMode, setUseLocalMode] = useState(!isFirebaseConfigured);
@@ -35,7 +38,7 @@ const App: React.FC<AppProps> = ({ mode }) => {
       try {
         const qTests = query(collection(db, 'tests'), orderBy('createdAt', 'desc'));
         unsubscribeTests = onSnapshot(qTests, (snapshot) => {
-          const testsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Test));
+          const testsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Test));
           setTests(testsData);
           setIsLoading(false);
         }, (error) => {
@@ -45,7 +48,7 @@ const App: React.FC<AppProps> = ({ mode }) => {
 
         const qSubmissions = query(collection(db, 'submissions'), orderBy('submittedAt', 'desc'));
         unsubscribeSubmissions = onSnapshot(qSubmissions, (snapshot) => {
-          const submissionsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Submission));
+          const submissionsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Submission));
           setSubmissions(submissionsData);
         }, (error) => {
           console.error("Firestore Submission Error:", error);
@@ -89,6 +92,41 @@ const App: React.FC<AppProps> = ({ mode }) => {
     setView('ADMIN_DASHBOARD');
   };
 
+  const handleDeleteTest = async (testId: string) => {
+    if (!useLocalMode && db) {
+      try {
+        await deleteDoc(doc(db, 'tests', testId));
+        // 관련 제출물도 삭제
+        const subQuery = query(collection(db, 'submissions'), where('testId', '==', testId));
+        const subSnapshot = await getDocs(subQuery);
+        for (const subDoc of subSnapshot.docs) {
+          await deleteDoc(doc(db, 'submissions', subDoc.id));
+        }
+        setView('ADMIN_DASHBOARD');
+        return;
+      } catch (error) {
+        console.warn("Cloud delete failed, deleting locally.");
+      }
+    }
+    const updatedTests = tests.filter(t => t.id !== testId);
+    const updatedSubmissions = submissions.filter(s => s.testId !== testId);
+    setTests(updatedTests);
+    setSubmissions(updatedSubmissions);
+    localStorage.setItem(LOCAL_TESTS_KEY, JSON.stringify(updatedTests));
+    localStorage.setItem(LOCAL_SUBMISSIONS_KEY, JSON.stringify(updatedSubmissions));
+    setView('ADMIN_DASHBOARD');
+  };
+
+  const handleSelectTest = (test: Test) => {
+    setActiveTest(test);
+    setView('ADMIN_TEST_DETAIL');
+  };
+
+  const handleSelectStudent = (submission: Submission) => {
+    setActiveSubmission(submission);
+    setView('ADMIN_STUDENT_DETAIL');
+  };
+
   const handleStartTest = (test: Test) => {
     setActiveTest(test);
     setView('STUDENT_TEST');
@@ -127,8 +165,10 @@ const App: React.FC<AppProps> = ({ mode }) => {
       case 'STUDENT_HOME': return <Home tests={tests} onStartTest={handleStartTest} />;
       case 'STUDENT_TEST': return activeTest ? <StudentTestView test={activeTest} onSubmit={handleSubmitTest} onCancel={() => setView('STUDENT_HOME')} /> : null;
       case 'STUDENT_RESULT': return lastSubmission ? <StudentResultView submission={lastSubmission} test={activeTest!} onHome={() => setView('STUDENT_HOME')} /> : null;
-      case 'ADMIN_DASHBOARD': return <TeacherDashboard tests={tests} submissions={submissions} onCreateNew={() => setView('ADMIN_CREATE')} />;
+      case 'ADMIN_DASHBOARD': return <TeacherDashboard tests={tests} submissions={submissions} onCreateNew={() => setView('ADMIN_CREATE')} onSelectTest={handleSelectTest} />;
       case 'ADMIN_CREATE': return <TestCreator onSave={handleCreateTest} onCancel={() => setView('ADMIN_DASHBOARD')} />;
+      case 'ADMIN_TEST_DETAIL': return activeTest ? <TestDetailView test={activeTest} submissions={submissions} onBack={() => setView('ADMIN_DASHBOARD')} onSelectStudent={handleSelectStudent} onDeleteTest={handleDeleteTest} /> : null;
+      case 'ADMIN_STUDENT_DETAIL': return activeTest && activeSubmission ? <StudentSubmissionDetail test={activeTest} submission={activeSubmission} onBack={() => setView('ADMIN_TEST_DETAIL')} /> : null;
       default: return <Home tests={tests} onStartTest={handleStartTest} />;
     }
   };

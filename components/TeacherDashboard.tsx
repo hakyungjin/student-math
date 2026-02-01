@@ -6,9 +6,10 @@ interface Props {
   tests: Test[];
   submissions: Submission[];
   onCreateNew: () => void;
+  onSelectTest: (test: Test) => void;
 }
 
-const TeacherDashboard: React.FC<Props> = ({ tests, submissions, onCreateNew }) => {
+const TeacherDashboard: React.FC<Props> = ({ tests, submissions, onCreateNew, onSelectTest }) => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in">
       <div className="flex items-center justify-between">
@@ -18,7 +19,7 @@ const TeacherDashboard: React.FC<Props> = ({ tests, submissions, onCreateNew }) 
           </h1>
           <p className="text-slate-500 text-sm">시험지 정답을 관리하고 제출 현황을 확인하세요.</p>
         </div>
-        <button 
+        <button
           onClick={onCreateNew}
           className="bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center gap-2"
         >
@@ -73,21 +74,24 @@ const TeacherDashboard: React.FC<Props> = ({ tests, submissions, onCreateNew }) 
           <div className="bg-white p-6 rounded-card border border-slate-100 shadow-sm">
             <h3 className="font-bold text-slate-700 mb-4">등록된 정답지 ({tests.length})</h3>
             <div className="space-y-3">
-              {tests.map(test => (
-                <div key={test.id} className="p-4 bg-slate-50 rounded-2xl border border-transparent hover:border-indigo-100 transition-all flex items-center justify-between">
-                  <div className="overflow-hidden">
-                    <p className="font-bold text-slate-800 truncate text-sm">{test.title}</p>
-                    <p className="text-[10px] text-slate-400">{test.questions.length}개 정답</p>
-                  </div>
-                  <div className="flex gap-1">
-                    <button className="p-1.5 text-slate-300 hover:text-indigo-500 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              ))}
+              {tests.map(test => {
+                const subCount = submissions.filter(s => s.testId === test.id).length;
+                return (
+                  <button
+                    key={test.id}
+                    onClick={() => onSelectTest(test)}
+                    className="w-full p-4 bg-slate-50 rounded-2xl border border-transparent hover:border-indigo-200 hover:bg-indigo-50 transition-all flex items-center justify-between text-left group"
+                  >
+                    <div className="overflow-hidden">
+                      <p className="font-bold text-slate-800 truncate text-sm">{test.title}</p>
+                      <p className="text-[10px] text-slate-400">{test.questions.length}문항 · {subCount}명 제출</p>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-300 group-hover:text-indigo-400 transition-colors flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
