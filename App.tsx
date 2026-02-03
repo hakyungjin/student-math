@@ -165,7 +165,7 @@ const App: React.FC<AppProps> = ({ mode }) => {
       case 'STUDENT_HOME': return <Home tests={tests} onStartTest={handleStartTest} />;
       case 'STUDENT_TEST': return activeTest ? <StudentTestView test={activeTest} onSubmit={handleSubmitTest} onCancel={() => setView('STUDENT_HOME')} /> : null;
       case 'STUDENT_RESULT': return lastSubmission ? <StudentResultView submission={lastSubmission} test={activeTest!} onHome={() => setView('STUDENT_HOME')} /> : null;
-      case 'ADMIN_DASHBOARD': return <TeacherDashboard tests={tests} submissions={submissions} onCreateNew={() => setView('ADMIN_CREATE')} onSelectTest={handleSelectTest} />;
+      case 'ADMIN_DASHBOARD': return <TeacherDashboard tests={tests} submissions={submissions} onCreateNew={() => setView('ADMIN_CREATE')} onSelectTest={handleSelectTest} onDeleteTest={handleDeleteTest} />;
       case 'ADMIN_CREATE': return <TestCreator onSave={handleCreateTest} onCancel={() => setView('ADMIN_DASHBOARD')} />;
       case 'ADMIN_TEST_DETAIL': return activeTest ? <TestDetailView test={activeTest} submissions={submissions} onBack={() => setView('ADMIN_DASHBOARD')} onSelectStudent={handleSelectStudent} onDeleteTest={handleDeleteTest} /> : null;
       case 'ADMIN_STUDENT_DETAIL': return activeTest && activeSubmission ? <StudentSubmissionDetail test={activeTest} submission={activeSubmission} onBack={() => setView('ADMIN_TEST_DETAIL')} /> : null;
