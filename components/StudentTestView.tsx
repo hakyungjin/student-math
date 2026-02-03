@@ -151,7 +151,9 @@ const StudentTestView: React.FC<Props> = ({ test, onSubmit, onCancel }) => {
           >
             {isSubmitting ? '채점 중... ⏳' : '다 풀었습니다! 제출! 📬'}
           </button>
-        </div>      </div>
+        </div>
+      </div>
+    </div>
     );
   }
 };
