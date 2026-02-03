@@ -149,4 +149,12 @@ const TeacherDashboard: React.FC<Props> = ({ tests, submissions, onCreateNew, on
                     </div>
                   );
                 })
-              )}
+              )}            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+};
+
+export default TeacherDashboard;

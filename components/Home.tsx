@@ -58,4 +58,9 @@ const Home: React.FC<Props> = ({ tests, onStartTest }) => {
       
       {/* 푸터 팁 */}
       <div className="pt-6 md:pt-10 border-t border-slate-100 text-center">
-        <p className="text-xs text-slate-300">💡 시험지가 보이지 않나요? 페이지를 새로고침해보세요.</p>
+        <p className="text-xs text-slate-300">💡 시험지가 보이지 않나요? 페이지를 새로고침해보세요.</p>      </div>
+    </div>
+  );
+};
+
+export default Home;
