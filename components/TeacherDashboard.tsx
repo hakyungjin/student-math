@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Test, Submission } from '../types';
 
@@ -13,7 +12,6 @@ interface Props {
 const TeacherDashboard: React.FC<Props> = ({ tests, submissions, onCreateNew, onSelectTest, onDeleteTest }) => {
   return (
     <div className="max-w-6xl mx-auto space-y-6 md:space-y-8 animate-in fade-in px-4 md:px-0">
-      {/* 헤더 섹션 */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-3">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-900 flex items-center gap-2 flex-wrap">
@@ -34,19 +32,14 @@ const TeacherDashboard: React.FC<Props> = ({ tests, submissions, onCreateNew, on
         </button>
       </div>
 
-      {/* 메인 컨텐츠 그리드 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-        {/* 제출 현황 테이블 */}
         <div className="lg:col-span-2 space-y-4">
           <div className="bg-white p-4 md:p-6 rounded-card border border-slate-100 shadow-sm">
             <h3 className="font-bold text-slate-700 mb-4 md:mb-6 flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                📊 실시간 제출 현황
-              </span>
+              <span className="flex items-center gap-2">📊 실시간 제출 현황</span>
               <span className="text-xs md:text-sm text-slate-400 font-normal">최근 {submissions.length}건</span>
             </h3>
             
-            {/* 모바일: 카드 레이아웃 */}
             <div className="md:hidden space-y-3">
               {submissions.length === 0 ? (
                 <div className="py-8 text-center text-slate-300">
@@ -71,7 +64,6 @@ const TeacherDashboard: React.FC<Props> = ({ tests, submissions, onCreateNew, on
               )}
             </div>
 
-            {/* 데스크톱: 테이블 레이아웃 */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead className="text-slate-400 border-b border-slate-50">
@@ -88,7 +80,7 @@ const TeacherDashboard: React.FC<Props> = ({ tests, submissions, onCreateNew, on
                     submissions.map(sub => {
                       const test = tests.find(t => t.id === sub.testId);
                       return (
-                        <tr key={sub.id} className="group hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => onSelectTest(test!)}>
+                        <tr key={sub.id} className="group hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => test && onSelectTest(test)}>
                           <td className="py-4 font-bold text-slate-800">{sub.studentName}</td>
                           <td className="py-4 text-slate-500">{test?.title || '삭제된 시험'}</td>
                           <td className="py-4 text-right">
@@ -105,7 +97,6 @@ const TeacherDashboard: React.FC<Props> = ({ tests, submissions, onCreateNew, on
           </div>
         </div>
 
-        {/* 등록된 정답지 목록 */}
         <div className="space-y-6">
           <div className="bg-white p-4 md:p-6 rounded-card border border-slate-100 shadow-sm">
             <h3 className="font-bold text-slate-700 mb-4 flex items-center gap-2">
@@ -149,12 +140,13 @@ const TeacherDashboard: React.FC<Props> = ({ tests, submissions, onCreateNew, on
                     </div>
                   );
                 })
-              )}            </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 };
 
 export default TeacherDashboard;
