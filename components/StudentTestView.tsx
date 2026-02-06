@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Test, Submission } from '../types';
-import { compareAnswers } from '../answerNormalizer';
+import { compareAnswers, formatForDisplay } from '../answerNormalizer';
 
 interface Props {
   test: Test;
@@ -141,7 +141,7 @@ const StudentTestView: React.FC<Props> = ({ test, onSubmit, onCancel }) => {
                         }`}>
                           {CHOICE_LABELS[i] || i + 1}
                         </span>
-                        <span className="flex-grow min-w-0 break-words">{opt}</span>
+                        <span className="flex-grow min-w-0 break-words font-mono">{formatForDisplay(opt)}</span>
                       </button>
                     ))}
                   </div>
