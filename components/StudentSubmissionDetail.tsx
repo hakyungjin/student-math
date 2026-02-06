@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Test, Submission, QuestionType } from '../types';
+import { formatForDisplay, isInequalityExpression } from '../answerNormalizer';
 
 interface Props {
   test: Test;
@@ -42,7 +43,9 @@ const StudentSubmissionDetail: React.FC<Props> = ({ test, submission, onBack }) 
         <h3 className="font-bold text-slate-600 px-1">문항별 결과</h3>
         {test.questions.map((q, idx) => {
           const isCorrect = submission.gradedResults[q.id];
-          const studentAnswer = submission.answers[q.id] || '(미응답)';
+          const rawStudentAnswer = submission.answers[q.id] || '(미응답)';
+          const studentAnswer = isInequalityExpression(rawStudentAnswer) ? formatForDisplay(rawStudentAnswer) : rawStudentAnswer;
+          const displayCorrect = isInequalityExpression(q.correctAnswer) ? formatForDisplay(q.correctAnswer) : q.correctAnswer;
           const isMultiple = q.type === QuestionType.MULTIPLE_CHOICE;
 
           return (
@@ -64,17 +67,17 @@ const StudentSubmissionDetail: React.FC<Props> = ({ test, submission, onBack }) 
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-bold text-rose-400 bg-rose-50 px-2 py-0.5 rounded-full">학생 답</span>
-                        <span className="text-sm text-rose-600 font-bold">{studentAnswer}</span>
+                        <span className="text-sm text-rose-600 font-bold font-mono">{studentAnswer}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-bold text-emerald-400 bg-emerald-50 px-2 py-0.5 rounded-full">정답</span>
-                        <span className="text-sm text-emerald-600 font-bold">{q.correctAnswer}</span>
+                        <span className="text-sm text-emerald-600 font-bold font-mono">{displayCorrect}</span>
                       </div>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-bold text-emerald-400 bg-emerald-50 px-2 py-0.5 rounded-full">정답</span>
-                      <span className="text-sm text-emerald-600 font-bold">{q.correctAnswer}</span>
+                      <span className="text-sm text-emerald-600 font-bold font-mono">{displayCorrect}</span>
                     </div>
                   )}
                 </div>
