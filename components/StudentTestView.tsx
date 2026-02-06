@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Test, Submission } from '../types';
+import { compareAnswers, formatForDisplay } from '../answerNormalizer';
 
 interface Props {
   test: Test;
@@ -42,8 +43,8 @@ const StudentTestView: React.FC<Props> = ({ test, onSubmit, onCancel }) => {
     try {
       for (const q of test.questions) {
         const studentAnswer = (answers[q.id] || '').trim();
-        // 모든 문제를 객관식 정확 매칭으로 채점
-        const isCorrect = studentAnswer === q.correctAnswer;
+        // 부등식 등 수학 표현식도 정규화하여 비교
+        const isCorrect = compareAnswers(studentAnswer, q.correctAnswer);
         gradedResults[q.id] = isCorrect;
         if (isCorrect) totalScore += q.points;
       }
@@ -140,7 +141,7 @@ const StudentTestView: React.FC<Props> = ({ test, onSubmit, onCancel }) => {
                         }`}>
                           {CHOICE_LABELS[i] || i + 1}
                         </span>
-                        <span className="flex-grow min-w-0 break-words">{opt}</span>
+                        <span className="flex-grow min-w-0 break-words font-mono">{formatForDisplay(opt)}</span>
                       </button>
                     ))}
                   </div>
