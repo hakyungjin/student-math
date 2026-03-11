@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Submission, Test } from '../types';
 
@@ -12,40 +11,42 @@ const StudentResultView: React.FC<Props> = ({ submission, test, onHome }) => {
   const percentage = (submission.score / submission.totalPossible) * 100;
 
   return (
-    <div className="max-w-xl mx-auto py-8 animate-in slide-in-from-top-8">
-      <div className="bg-white rounded-card shadow-2xl overflow-hidden border border-amber-50">
-        <div className={`p-12 text-center text-white ${percentage >= 80 ? 'bg-emerald-400' : percentage >= 50 ? 'bg-amber-400' : 'bg-rose-400'}`}>
-          <p className="text-xl font-bold opacity-80 mb-2">{submission.studentName} 학생의 점수는?</p>
-          <div className="text-8xl font-black my-4">
-            {submission.score}<span className="text-2xl opacity-60 ml-1">점</span>
+    <div className="max-w-xl mx-auto py-8">
+      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+        {/* 점수 헤더 */}
+        <div className={`p-10 text-center text-white ${percentage >= 80 ? 'bg-emerald-500' : percentage >= 50 ? 'bg-amber-500' : 'bg-red-500'}`}>
+          <p className="text-lg font-medium opacity-90 mb-2">{submission.studentName}</p>
+          <div className="text-7xl font-bold my-4">
+            {submission.score}<span className="text-2xl opacity-70 ml-1">/{submission.totalPossible}</span>
           </div>
-          <p className="text-lg font-medium opacity-90">
-            {percentage >= 80 ? '와! 정말 대단해요! 🎉' : percentage >= 50 ? '잘했어요! 조금만 더 힘내요! 👍' : '다음에 더 잘할 수 있을 거예요! 😊'}
+          <p className="text-base font-medium opacity-90">
+            {percentage >= 80 ? '훌륭합니다!' : percentage >= 50 ? '좋은 결과입니다' : '다음에 더 잘할 수 있어요'}
           </p>
         </div>
 
-        <div className="p-8 space-y-6">
-          <h3 className="font-bold text-slate-500 text-center uppercase tracking-widest text-sm">간단 결과 확인</h3>
-          <div className="grid grid-cols-5 gap-3">
+        {/* 결과 상세 */}
+        <div className="p-6 space-y-6">
+          <h3 className="font-medium text-slate-500 text-center text-sm">문제별 결과</h3>
+          <div className="grid grid-cols-5 gap-2">
             {test.questions.map((q, idx) => {
               const isCorrect = submission.gradedResults[q.id];
               return (
-                <div 
-                  key={q.id} 
-                  className={`aspect-square flex flex-col items-center justify-center rounded-2xl border-2 transition-all ${isCorrect ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-rose-50 border-rose-200 text-rose-600'}`}
+                <div
+                  key={q.id}
+                  className={`aspect-square flex flex-col items-center justify-center rounded-xl transition-all ${isCorrect ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'}`}
                 >
-                  <span className="text-[10px] font-bold opacity-50">{idx + 1}</span>
-                  <span className="font-black text-lg">{isCorrect ? 'O' : 'X'}</span>
+                  <span className="text-[10px] font-medium opacity-60">{idx + 1}</span>
+                  <span className="font-bold text-lg">{isCorrect ? 'O' : 'X'}</span>
                 </div>
               );
             })}
           </div>
 
-          <button 
+          <button
             onClick={onHome}
-            className="w-full bg-slate-900 text-white py-4 rounded-button font-bold hover:bg-slate-800 transition-all shadow-lg mt-4"
+            className="w-full bg-slate-900 text-white py-4 rounded-xl font-medium hover:bg-slate-800 transition-colors"
           >
-            첫 화면으로 돌아가기
+            홈으로 돌아가기
           </button>
         </div>
       </div>

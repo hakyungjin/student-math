@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Test } from '../types';
 
@@ -9,56 +8,62 @@ interface Props {
 
 const Home: React.FC<Props> = ({ tests, onStartTest }) => {
   return (
-    <div className="max-w-3xl mx-auto space-y-6 md:space-y-10 py-4 md:py-8 px-4 md:px-0">
+    <div className="max-w-3xl mx-auto space-y-8 py-4 md:py-8">
       {/* 헤더 섹션 */}
-      <section className="text-center space-y-2 md:space-y-3">
-        <h1 className="text-2xl md:text-4xl font-black text-slate-900">
-          오늘 풀 시험지를 골라요! 📋
+      <section className="text-center space-y-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-800">
+          시험지를 선택하세요
         </h1>
-        <p className="text-slate-400 text-xs md:text-sm">
-          종이 시험지의 정답을 아래에서 선택해 제출하세요.
+        <p className="text-slate-500 text-sm">
+          종이 시험지의 정답을 아래에서 선택해 제출하세요
         </p>
       </section>
 
       {/* 시험지 목록 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {tests.length === 0 ? (
-          <div className="col-span-full text-center py-16 md:py-20 bg-white rounded-card border-2 border-dashed border-slate-100">
-            <p className="text-slate-300 text-sm md:text-base">아직 준비된 시험지가 없어요.</p>
-            <p className="text-xs text-slate-200 mt-2">선생님께 시험지를 열어달라고 말씀드려보세요!</p>
+          <div className="col-span-full text-center py-20 bg-white rounded-2xl border border-slate-100">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <p className="text-slate-500 mb-2">아직 준비된 시험지가 없습니다</p>
+            <p className="text-xs text-slate-400">관리자에게 시험지를 요청하세요</p>
           </div>
         ) : (
           tests.map(test => (
-            <button 
+            <button
               key={test.id}
               onClick={() => onStartTest(test)}
-              className="bg-white p-4 md:p-6 rounded-card border border-slate-100 hover:border-amber-300 hover:shadow-lg md:hover:shadow-xl hover:shadow-amber-100/50 transition-all text-left active:scale-[0.98] flex flex-col gap-3"
+              className="bg-white p-6 rounded-2xl border border-slate-100 hover:border-blue-200 hover:shadow-lg transition-all text-left group"
             >
-              <div className="flex-1">
-                <h3 className="font-bold text-slate-800 text-base md:text-lg line-clamp-2">{test.title}</h3>
-                <div className="flex gap-2 mt-2 flex-wrap">
-                  <span className="text-xs bg-slate-50 text-slate-400 px-2.5 py-1 rounded-full">
-                    📝 {test.questions.length}문항
-                  </span>
-                  <span className="text-xs bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full font-semibold">
-                    지금 가능
-                  </span>
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 font-bold">
+                  {test.questions.length}
                 </div>
-              </div>
-              <div className="flex items-center gap-2 text-amber-500">
-                <span className="text-xs font-semibold">풀어보기</span>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                <svg className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
+              </div>
+              <h3 className="font-bold text-slate-800 text-lg mb-2">{test.title}</h3>
+              <div className="flex gap-2">
+                <span className="text-xs bg-slate-100 text-slate-500 px-2.5 py-1 rounded-lg">
+                  {test.questions.length}문항
+                </span>
+                <span className="text-xs bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-lg font-medium">
+                  응시 가능
+                </span>
               </div>
             </button>
           ))
         )}
       </div>
-      
+
       {/* 푸터 팁 */}
-      <div className="pt-6 md:pt-10 border-t border-slate-100 text-center">
-        <p className="text-xs text-slate-300">💡 시험지가 보이지 않나요? 페이지를 새로고침해보세요.</p>      </div>
+      <div className="pt-8 border-t border-slate-100 text-center">
+        <p className="text-xs text-slate-400">시험지가 보이지 않나요? 페이지를 새로고침해보세요</p>
+      </div>
     </div>
   );
 };

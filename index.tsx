@@ -14,6 +14,7 @@ root.render(
       <Routes>
         <Route path="/" element={<App mode="student" />} />
         <Route path="/admin" element={<App mode="admin" />} />
+        <Route path="/archive" element={<App mode="student" />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
